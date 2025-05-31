@@ -421,11 +421,10 @@ int Kuznechik_bitslice_encrypt_test_3(const uint32_t countEncrypt)
 	double cpuTimeUsed3 = ((double)endTime3.tv_sec - startTime3.tv_sec) + ((double)endTime3.tv_nsec - startTime3.tv_nsec) / 1000000000.0;
 
 	printf("countEncrypt = %u\n", countEncrypt);
-	double speed = (double)countEncrypt / 65536.f / cpuTimeUsed3; // ñêîðîñòü îáðàáîòêè îòêðûòûõ äàííûõ â Ìáàéò/ñåê.
+	double speed = (double)countEncrypt / 65536.f / cpuTimeUsed3;
 	printf("Speed encrypt %f Mbytes/s\n", speed);
 	printf("Time elapsed variant timespec_get() %f\n", cpuTimeUsed3);
-
-	// ôîðìèðóåòñÿ êîíòðîëüíîå çíà÷åíèå ñ êîòîðûì ìîæíî ñðàâíèâàòü ïðàâèëüíîñòü ðåàëèçàöèé
+	
 	for (n = 0; n < countEncrypt; ++n)
 	{
 		const uint32_t pos = n * 16;
@@ -478,40 +477,42 @@ int Kuznechik_bitslice_encrypt_file(const char *fn)
 	if (!f)
 	{
 		printf("Error fopen\n");
-		return -1;
+		exit(1);
+		//return -1;
 	}
 	fseek(f, 0, SEEK_END);
-	const long filesize = ftell(f);
+	size_t filesize = ftell(f);
 	fseek(f, 0, SEEK_SET);
-#if defined(_MSC_VER)
-	uint8_t* text = (uint8_t*)_aligned_malloc(filesize, 16);
-#else
-    uint8_t* text = aligned_alloc(16, filesize);
-#endif
-	//text = malloc(filesize);
-	int r = fread(text, 1, filesize, f);
-	if (r)
-	{		
+	printf("file size %lu\n", filesize);
+	countEncrypt=(filesize>>4)/MaxCountMessage*MaxCountMessage; //!!! count blocks, round, tail don't encrypting, only demonstration
+
+	uint8_t* text = malloc((filesize/16+1)*16);
+	//_ALIGN(MALLOCALIGN) uint8_t* text = (uint8_t*)aligned_malloc(((filesize-1)/16+1)*16, sizeof(T)); //malloc(filesize);
+	size_t r = fread(text, 1, filesize, f);
+	if (r != filesize)
+	{
+		printf("Error fread\n");
+		exit(1);
 	}
 	fclose(f);
-
-	countEncrypt=(filesize>>4); // count blocks
+	
+	printf("file readed\n");
 
 	_ALIGN(16) uint8_t key_exp[10][16];
 	KeyExpansion(src_key_test, key_exp);
 
-	_ALIGN(16) uint64_t key_exp_uint64[10][2];
-	for (int i=0;i<10;++i)
-	{
-		key_exp_uint64[i][0] = key_exp[i][7];
-		key_exp_uint64[i][1] = key_exp[i][15];
-		for (int j=1;j<8;++j)
-		{
-			key_exp_uint64[i][0]<<=8; key_exp_uint64[i][1]<<=8;
-			key_exp_uint64[i][0] |= key_exp[i][7-j];
-			key_exp_uint64[i][1] |= key_exp[i][15-j];
-		}
-	}
+//	_ALIGN(16) uint64_t key_exp_uint64[10][2];
+//	for (int i=0;i<10;++i)
+//	{
+//		key_exp_uint64[i][0] = key_exp[i][7];
+//		key_exp_uint64[i][1] = key_exp[i][15];
+//		for (int j=1;j<8;++j)
+//		{
+//			key_exp_uint64[i][0]<<=8; key_exp_uint64[i][1]<<=8;
+//			key_exp_uint64[i][0] |= key_exp[i][7-j];
+//			key_exp_uint64[i][1] |= key_exp[i][15-j];
+//		}
+//	}
 
 	struct timespec startTime3, endTime3;
 	timespec_get(&startTime3, TIME_UTC);
@@ -525,11 +526,10 @@ int Kuznechik_bitslice_encrypt_file(const char *fn)
 	double cpuTimeUsed3 = ((double)endTime3.tv_sec - startTime3.tv_sec) + ((double)endTime3.tv_nsec - startTime3.tv_nsec) / 1000000000.0;
 
 	printf("countEncrypt = %u\n", countEncrypt);
-	double speed = (double)countEncrypt / 65536.f / cpuTimeUsed3; // ñêîðîñòü îáðàáîòêè îòêðûòûõ äàííûõ â Ìáàéò/ñåê.
+	double speed = (double)countEncrypt / 65536.f / cpuTimeUsed3;
 	printf("Speed encrypt %f Mbytes/s\n", speed);
 	printf("Time elapsed variant timespec_get() %f\n", cpuTimeUsed3);
-
-	// ôîðìèðóåòñÿ êîíòðîëüíîå çíà÷åíèå ñ êîòîðûì ìîæíî ñðàâíèâàòü ïðàâèëüíîñòü ðåàëèçàöèé
+	
 	for (n = 0; n < countEncrypt; ++n)
 	{
 		const uint32_t pos = n * 16;
@@ -544,12 +544,6 @@ int Kuznechik_bitslice_encrypt_file(const char *fn)
 	}
 
 	printf("Control value %08X\n", control);
-
-#if defined(_MSC_VER)
-	_aligned_free(text);
-#else
 	free(text);
-#endif
-
 	return 0;
 }
