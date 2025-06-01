@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 
+// Подстановка аналогичная подстановке в Стрибог
 void Subst_tr_bitslice(T *a, int countBlock);
 void Subst_invert_tr_bitslice(T* a, int countBlock);
 //void functionPiStroke(T a_[512]);

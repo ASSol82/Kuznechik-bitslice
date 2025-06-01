@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include "Convert.h"
+#include "Convert_bitslice.h"
 #include "LogicalOperations.h"
 
 
@@ -117,7 +118,7 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 
 	_ALIGN(32) const __m256i perm = _mm256_set_epi8(15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0, 15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0);
 	_ALIGN(32) const __m256i perm8x32 = _mm256_set_epi32(7, 3, 6, 2, 5, 1, 4, 0);
-
+	
 	uint32_t i;
 	for (i = 0; i < (countText & 0xFFFFFFE0UL); i+=32) // ~7UL); i+=8)
 	{
