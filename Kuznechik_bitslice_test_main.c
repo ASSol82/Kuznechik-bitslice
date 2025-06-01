@@ -103,9 +103,7 @@ int main(int argc, char *argv[])
 	if (fn == NULL)
 		Kuznechik_bitslice_encrypt_test_3(countTestMessage);
 	else			
-		Kuznechik_bitslice_encrypt_file(fn);
+		Kuznechik_bitslice_encrypt_file(fn); //!!! this only demonstration. It's not exactly accurate to work with the file size.
 
 	return 0;
 }
-
-
