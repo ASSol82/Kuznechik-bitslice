@@ -1,1 +1,34 @@
-/media/320Gb/Projects/Kuznechik/src/src_Kuznechik_bislice/README.md
+# Kuznechik_bitslice
+
+Bitslice (bit-parallel) implementation of the Grasshopper algorithm from GOST 34.12—2015
+
+## Compilation
+
+### Linux
+
+Download the repository to your local disk and go to the **Streebog-bitslice** directory.
+
+At the command prompt from **Kuznechik-bitslice** directory, type
+
+**make**
+
+After running make, a file named **Kuznechik_bitslice_test** should be created in the current directory.
+
+### In other operating systems
+
+Compile files from the repository in a convenient way.
+
+## Run
+
+### Linux
+
+At the command prompt, type for example
+
+**./Kuznechik_bitslice_test**
+
+## Testbench
+
+Computer with Intel Core i5 8400 processor.
+
+**./Kuznechik_bitslice_test**    ->  The encryption rate is 395 MBytes per second or, what is the same, 395*8=3160 Mbits per second.
+
