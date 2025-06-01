@@ -28,7 +28,6 @@ At the command prompt, type for example
 
 ## Testbench
 
-Computer with Intel Core i5 8400 processor.
+The test bench is represented by a computer with an Intel Core i5 8400 central processor.
 
 **./Kuznechik_bitslice_test**    ->  The encryption rate is 395 MBytes per second or, what is the same, 395*8=3160 Mbits per second.
-
