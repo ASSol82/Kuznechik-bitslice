@@ -41,3 +41,8 @@ Solovyev Anatoly Sergeevich
 NonCommercial 
 
 Only non commercial use.
+
+## Comment
+
+Anatoly Sergeevich Solovyev and Denis Bonislavovich Fomin
+Bitsliced implementations of the «Streebog» and «Kuznechik» algorithms
