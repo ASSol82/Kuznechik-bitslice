@@ -36,6 +36,8 @@ The test bench is represented by a computer with an Intel Core i5 8400 central p
 
 Solovyev Anatoly Sergeevich
 
+email: soloviov-anatoly@mail.ru
+
 ## LICENSE
 
 **CC BY-ND-NC**
