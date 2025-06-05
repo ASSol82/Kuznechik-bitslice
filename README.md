@@ -1,6 +1,6 @@
-# Kuznechik_bitslice
+# Kuznechik bitslice
 
-Bitslice (bit-parallel) implementation of the Grasshopper algorithm from GOST 34.12—2018
+Bitslice (bit-parallel) implementation of the Kuznechik (Kuznyechik, Grasshopper) algorithm from GOST 34.12—2018
 
 ## Compilation
 
