@@ -358,12 +358,14 @@ int Kuznechik_bitslice_encrypt_test_3(const uint32_t countEncrypt)
 	0xef,0xcd,0xab,0x89,0x67,0x45,0x23,0x01,0x10,0x32,0x54,0x76,0x98,0xba,0xdc,0xfe,
 	0x77,0x66,0x55,0x44,0x33,0x22,0x11,0x00,0xff,0xee,0xdd,0xcc,0xbb,0xaa,0x99,0x88 };
 	//uint8_t text[] = { 0x88, 0x99, 0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x00,0x77,0x66,0x55,0x44,0x33,0x22,0x11 };
-#if defined(_MSC_VER)
-	uint8_t* text = (uint8_t*)_aligned_malloc(countEncrypt * 16, 16);
-#else
-	//_ALIGN(MALLOCALIGN) uint8_t* text = malloc(countEncrypt * 16);
-    _ALIGN(MALLOCALIGN) uint8_t* text = aligned_alloc(16, countEncrypt * 16);
-#endif
+//#if defined(_MSC_VER)
+//	uint8_t* text = (uint8_t*)_aligned_malloc(countEncrypt * 16, 16);
+//#else
+//	//_ALIGN(MALLOCALIGN) uint8_t* text = malloc(countEncrypt * 16);
+//    _ALIGN(MALLOCALIGN) uint8_t* text = aligned_alloc(16, countEncrypt * 16);
+//#endif
+	uint8_t* text = malloc(countEncrypt * 16);
+
 	uint32_t n;
 	uint32_t temp;
 	uint32_t control = 0;
@@ -396,18 +398,18 @@ int Kuznechik_bitslice_encrypt_test_3(const uint32_t countEncrypt)
 	_ALIGN(16) uint8_t key_exp[10][16];
 	KeyExpansion(src_key_test, key_exp);
 
-	_ALIGN(16) uint64_t key_exp_uint64[10][2];
-	for (int i=0;i<10;++i)
-	{
-		key_exp_uint64[i][0] = key_exp[i][7];
-		key_exp_uint64[i][1] = key_exp[i][15];
-		for (int j=1;j<8;++j)
-		{
-			key_exp_uint64[i][0]<<=8; key_exp_uint64[i][1]<<=8;
-			key_exp_uint64[i][0] |= key_exp[i][7-j];
-			key_exp_uint64[i][1] |= key_exp[i][15-j];
-		}
-	}
+//	_ALIGN(16) uint64_t key_exp_uint64[10][2];
+//	for (int i=0;i<10;++i)
+//	{
+//		key_exp_uint64[i][0] = key_exp[i][7];
+//		key_exp_uint64[i][1] = key_exp[i][15];
+//		for (int j=1;j<8;++j)
+//		{
+//			key_exp_uint64[i][0]<<=8; key_exp_uint64[i][1]<<=8;
+//			key_exp_uint64[i][0] |= key_exp[i][7-j];
+//			key_exp_uint64[i][1] |= key_exp[i][15-j];
+//		}
+//	}
 
 	struct timespec startTime3, endTime3;
 	timespec_get(&startTime3, TIME_UTC);
@@ -440,11 +442,12 @@ int Kuznechik_bitslice_encrypt_test_3(const uint32_t countEncrypt)
 
 	printf("Control value %08X\n", control);
 
-#if defined(_MSC_VER)
-	_aligned_free(text);
-#else
 	free(text);
-#endif
+//#if defined(_MSC_VER)
+//	_aligned_free(text);
+//#else
+//	free(text);
+//#endif
 
 	return 0;
 }
