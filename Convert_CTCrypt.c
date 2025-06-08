@@ -133,14 +133,14 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 			from_8x32_to_256(w256[2],p_src32,64,68,72,76,80,84,88,92);
 			from_8x32_to_256(w256[3],p_src32,96,100,104,108,112,116,120,124);
 
-			w256[0] = _mm256_shuffle_epi8(w256[0],perm); // собираю по 2 байта
-			w256[0] = _mm256_permutevar8x32_epi32(w256[0], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[1] = _mm256_shuffle_epi8(w256[1],perm); // собираю по 2 байта
-			w256[1] = _mm256_permutevar8x32_epi32(w256[1], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[2] = _mm256_shuffle_epi8(w256[2],perm); // собираю по 2 байта
-			w256[2] = _mm256_permutevar8x32_epi32(w256[2], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[3] = _mm256_shuffle_epi8(w256[3],perm); // собираю по 2 байта
-			w256[3] = _mm256_permutevar8x32_epi32(w256[3], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
+			w256[0] = _mm256_shuffle_epi8(w256[0],perm); // собираю по 4 байта
+			w256[0] = _mm256_permutevar8x32_epi32(w256[0], perm8x32); // младшие 64 бита - это первые байты восьми сообщений, следующие 64 бита - это вторые байты 8 сообщений...
+			w256[1] = _mm256_shuffle_epi8(w256[1],perm); // собираю по 4 байта
+			w256[1] = _mm256_permutevar8x32_epi32(w256[1], perm8x32);
+			w256[2] = _mm256_shuffle_epi8(w256[2],perm); // собираю по 4 байта
+			w256[2] = _mm256_permutevar8x32_epi32(w256[2], perm8x32);
+			w256[3] = _mm256_shuffle_epi8(w256[3],perm); // собираю по 4 байта
+			w256[3] = _mm256_permutevar8x32_epi32(w256[3], perm8x32);
 
 			transpose8x8_4_macros(w256[0])
 			transpose8x8_4_macros(w256[1])
@@ -148,9 +148,9 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 			transpose8x8_4_macros(w256[3])
 
 			_ALIGN(32) __m256i t1, t2, t3;
-			t1 = _mm256_unpacklo_epi8(w256[0], w256[1]); //t1 содержит word из битов в младших 64-х битовых половинках
+			t1 = _mm256_unpacklo_epi8(w256[0], w256[1]); //t1 содержит word из байтов в младших 64-х битовых половинках каждой 128-битовой линии из w256[0] и w256[1]
 			t2 = _mm256_unpacklo_epi8(w256[2], w256[3]);
-			t3 = _mm256_unpacklo_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
+			t3 = _mm256_unpacklo_epi16(t1, t2); // t3 содержит dword из word в младших 64-х битовых половинках каждой 128-битовых линии
 			p32[0]  = _mm256_extract_epi32(t3, 0);
 			p32[8]  = _mm256_extract_epi32(t3, 1);
 			p32[16] = _mm256_extract_epi32(t3, 2);
@@ -159,7 +159,7 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 			p32[17*8] = _mm256_extract_epi32(t3, 5);
 			p32[18*8] = _mm256_extract_epi32(t3, 6);
 			p32[19*8] = _mm256_extract_epi32(t3, 7);
-			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в старших половинах каждой 128-битовых линий
+			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в старших половинах каждой 128-битовой линии
 			p32[32]  = _mm256_extract_epi32(t3, 0);
 			p32[40]  = _mm256_extract_epi32(t3, 1);
 			p32[48]  = _mm256_extract_epi32(t3, 2);
@@ -168,7 +168,7 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 			p32[21*8] = _mm256_extract_epi32(t3, 5);
 			p32[22*8] = _mm256_extract_epi32(t3, 6);
 			p32[23*8] = _mm256_extract_epi32(t3, 7);
-			t1 = _mm256_unpackhi_epi8(w256[0], w256[1]); //t1 содержит word из битов в младших 64-х битовых половинках
+			t1 = _mm256_unpackhi_epi8(w256[0], w256[1]); //t1 содержит word из байтов в старших 64-х битовых половинках
 			t2 = _mm256_unpackhi_epi8(w256[2], w256[3]);
 			t3 = _mm256_unpacklo_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
 			p32[8*8]  = _mm256_extract_epi32(t3, 0);
@@ -179,7 +179,7 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 			p32[25*8] = _mm256_extract_epi32(t3, 5);
 			p32[26*8] = _mm256_extract_epi32(t3, 6);
 			p32[27*8] = _mm256_extract_epi32(t3, 7);
-			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
+			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в старших половинах 128-битовых линий
 			p32[12*8]  = _mm256_extract_epi32(t3, 0);
 			p32[13*8]  = _mm256_extract_epi32(t3, 1);
 			p32[14*8] = _mm256_extract_epi32(t3, 2);
@@ -195,7 +195,7 @@ void ConvertToBitSlice128_all(const uint8_t *src, const uint32_t countText, T ds
 	}
 	for (i = (countText & 0xFFFFFFE0UL); i < countText; ++i) // оставшиеся открытые тексты конвертируем
 	{
-		ConvertToBitSlice128(i, src + (i << 4), dst); // эту функцию можно вызвать если осталось менее 8 текстов
+		ConvertToBitSlice128(i, src + (i << 4), dst); // эту функцию следует вызвать для оставшихся блоков
 	}	
 }
 
@@ -232,14 +232,14 @@ void ConvertFromBitSlice128_all(const T src[128], const uint32_t countText, uint
 			from_8x32_to_256(w256[2],p_src32,128,136,144,152,160,168,176,184);
 			from_8x32_to_256(w256[3],p_src32,192,200,208,216,224,232,240,248);
 
-			w256[0] = _mm256_shuffle_epi8(w256[0], perm); // собираю по 2 байта
-			w256[0] = _mm256_permutevar8x32_epi32(w256[0], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[1] = _mm256_shuffle_epi8(w256[1], perm); // собираю по 2 байта
-			w256[1] = _mm256_permutevar8x32_epi32(w256[1], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[2] = _mm256_shuffle_epi8(w256[2], perm); // собираю по 2 байта
-			w256[2] = _mm256_permutevar8x32_epi32(w256[2], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
-			w256[3] = _mm256_shuffle_epi8(w256[3], perm); // собираю по 2 байта
-			w256[3] = _mm256_permutevar8x32_epi32(w256[3], perm8x32); // делаю перестановку среди 32-х битовых переменных, чтобы байты сообщений 1..4 оказались в левом 128-битовом векторе, а байты сообщений 5..8 в правом 128-битовом векторе
+			w256[0] = _mm256_shuffle_epi8(w256[0], perm); // собираю по 4 байта
+			w256[0] = _mm256_permutevar8x32_epi32(w256[0], perm8x32);
+			w256[1] = _mm256_shuffle_epi8(w256[1], perm); // собираю по 4 байта
+			w256[1] = _mm256_permutevar8x32_epi32(w256[1], perm8x32);
+			w256[2] = _mm256_shuffle_epi8(w256[2], perm); // собираю по 4 байта
+			w256[2] = _mm256_permutevar8x32_epi32(w256[2], perm8x32);
+			w256[3] = _mm256_shuffle_epi8(w256[3], perm); // собираю по 4 байта
+			w256[3] = _mm256_permutevar8x32_epi32(w256[3], perm8x32);
 
 			transpose8x8_4_macros(w256[0])
 			transpose8x8_4_macros(w256[1])
@@ -247,7 +247,7 @@ void ConvertFromBitSlice128_all(const T src[128], const uint32_t countText, uint
 			transpose8x8_4_macros(w256[3])
 
 			_ALIGN(32) __m256i t1, t2, t3;
-			t1 = _mm256_unpacklo_epi8(w256[0], w256[1]); //t1 содержит word из битов в младших 64-х битовых половинках
+			t1 = _mm256_unpacklo_epi8(w256[0], w256[1]); //t1 содержит word из байтов в младших 64-х битовых половинках
 			t2 = _mm256_unpacklo_epi8(w256[2], w256[3]);
 			t3 = _mm256_unpacklo_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
 			p32[0 * 4] = _mm256_extract_epi32(t3, 0);
@@ -267,7 +267,7 @@ void ConvertFromBitSlice128_all(const T src[128], const uint32_t countText, uint
 			p32[21 * 4] = _mm256_extract_epi32(t3, 5);
 			p32[22 * 4] = _mm256_extract_epi32(t3, 6);
 			p32[23 * 4] = _mm256_extract_epi32(t3, 7);
-			t1 = _mm256_unpackhi_epi8(w256[0], w256[1]); //t1 содержит word из битов в младших 64-х битовых половинках
+			t1 = _mm256_unpackhi_epi8(w256[0], w256[1]);
 			t2 = _mm256_unpackhi_epi8(w256[2], w256[3]);
 			t3 = _mm256_unpacklo_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
 			p32[8 * 4] = _mm256_extract_epi32(t3, 0);
@@ -278,7 +278,7 @@ void ConvertFromBitSlice128_all(const T src[128], const uint32_t countText, uint
 			p32[25 * 4] = _mm256_extract_epi32(t3, 5);
 			p32[26 * 4] = _mm256_extract_epi32(t3, 6);
 			p32[27 * 4] = _mm256_extract_epi32(t3, 7);
-			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в младших половинах 128-битовых линий
+			t3 = _mm256_unpackhi_epi16(t1, t2); // t3 содержит dword из word в старших половинах 128-битовых линий
 			p32[12 * 4] = _mm256_extract_epi32(t3, 0);
 			p32[13 * 4] = _mm256_extract_epi32(t3, 1);
 			p32[14 * 4] = _mm256_extract_epi32(t3, 2);

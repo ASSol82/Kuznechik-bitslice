@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 	const uint32_t countTestMessage = 1<<24; //1 << 24; //MaxCountMessage
 	//Kuznechik_bitslice_encrypt_test_2(countTestMessage);
 	if (fn == NULL)
-		Kuznechik_bitslice_encrypt_test_3(countTestMessage);
+		Kuznechik_bitslice_encrypt_test_3(countTestMessage); // countEncrypt = 16777216 Control value E92A1D61
 	else			
 		Kuznechik_bitslice_encrypt_file(fn); //!!! this only demonstration. It's not exactly accurate to work with the file size.
 
