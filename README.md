@@ -40,11 +40,7 @@ email: soloviov-anatoly@mail.ru
 
 ## LICENSE
 
-**CC BY-ND-NC**
-
-NonCommercial
-
-Only non commercial use.
+The license is described in the file https://github.com/ASSol82/Kuznechik-bitslice/blob/main/LICENSE.md
 
 ## Comment
 
@@ -54,5 +50,3 @@ The link to this repository is located in a paper
 Bitsliced implementations of the «Streebog» and «Kuznechik» algorithms**
 
 published at the CTCRYPT 2025 conference.
-
-
