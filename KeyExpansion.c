@@ -68,8 +68,7 @@ int KeyExpansion_test()
 	for (j = 0; j < 10; ++j)
 	{
 		if (!equal_tr(key[j], keyexp_test[j]))
-		{
-			//printf(" %d ", j);
+		{			
 			printf("error\n");
 			return -1;
 		}
