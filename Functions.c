@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Functions.h"
-#include "Subst_tr.h"
+//#include "Subst_tr.h"
 
 
 // 1, a==b, 0, a!=b
