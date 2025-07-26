@@ -11,9 +11,13 @@
 #if PiStroke_VERSION==1
 #include "PiCoordFuncSSE.1.h"
 #elif PiStroke_VERSION==21
-#include "PiCoordFuncSSE.2.1.h"
+#include "PiCoordFuncSSE.2.1.h" // CTCRYPT
 #elif PiStroke_VERSION==22
 #include "PiCoordFuncSSE.2.2.h" // optimize Inv 18op, Sigma 15op
+#elif PiStroke_VERSION==221
+#include "PiCoordFuncSSE.2.2.1.h"
+#elif PiStroke_VERSION==222
+#include "PiCoordFuncSSE.2.2.2.h"
 #elif PiStroke_VERSION==23
 #include "PiCoordFuncSSE.2.3.h" // LUT
 #else

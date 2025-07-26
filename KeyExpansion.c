@@ -2,9 +2,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-//#include "L_tr.h"
 #include "XSL_tr.h"
-#include "Functions.h"
 
 
 // Generate_C() C_const.c
@@ -26,16 +24,25 @@ int KeyExpansion(const uint8_t src_key[32], uint8_t key[10][16])
 
 	for (i = 0; i < 4; ++i)
 	{
-		copy_tr(key[(i + 1) * 2], key[i * 2]);
-		copy_tr(key[(i + 1) * 2 + 1], key[i * 2 + 1]);
+		for (uint32_t k = 0; k < 16; ++k)
+		{
+			key[(i + 1) * 2][k] = key[i * 2][k];
+			key[(i + 1) * 2 + 1][k] = key[i * 2 + 1][k];
+		}
 		for (j = 0; j < 8; ++j)
 		{
-			copy_tr(t, key[(i + 1) * 2 + (j&1)]);
+			for (uint32_t k = 0; k < 16; ++k)
+			{
+				t[k] = key[(i + 1) * 2 + (j&1)][k];
+			}			
 			XSL_transform(C_const[i * 8 + j], t);
 			//xor_tr(t, C_const[i * 8 + j]);
 			//subst_tr(t);
 			//L_transform(t);
-			xor_tr(key[(i + 1) * 2 + 1 - (j&1)], t);
+			for (uint32_t k = 0; k < 16; ++k)
+			{
+				key[(i + 1) * 2 + 1 - (j&1)][k] ^= t[k];
+			}			
 		}
 	}
 	return 0;
@@ -67,10 +74,13 @@ int KeyExpansion_test()
 	printf("KeyExpansion test ... ");
 	for (j = 0; j < 10; ++j)
 	{
-		if (!equal_tr(key[j], keyexp_test[j]))
-		{			
-			printf("error\n");
-			return -1;
+		for (uint32_t k=0;k<16;++k)
+		{
+			if (key[j][k] != keyexp_test[j][k])
+			{
+				printf("error\n");
+				return -1;				
+			}
 		}
 	}
 	printf("ok\n");

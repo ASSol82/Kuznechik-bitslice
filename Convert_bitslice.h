@@ -93,9 +93,6 @@ x = _OR(_OR(_AND(x, c5), _SHIFTL64(_AND(x, c6), 28)), _AND(_SHIFTR64(x, 28), c6)
 }
 
 
-//void ConvertBitslice_32x32(const __m256i w256[4], uint32_t* p32, const uint32_t offset);
-
-
 #endif //MaxCountMessage==256
 
 
