@@ -20,6 +20,8 @@ int main(int argc, char *argv[])
 
 	printf("PiVersion %u\n", PiVersion());
 
+	KeyExpansion_bitslice_test();
+
 	Kuznechik_bitslice_encrypt_test();
 
 	const uint32_t countTestMessage = 1<<24;
