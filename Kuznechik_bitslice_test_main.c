@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdint.h>
-//#include "Functions.h"
 #include "VectorType.h"
 #include "Convert.h"
 #include "L_tr_bitslice.h"

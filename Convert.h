@@ -1,7 +1,6 @@
 
 
 #include "VectorType.h"
-//#include "VectorTypeSSE.h"
 #include <stdint.h>
 
 
