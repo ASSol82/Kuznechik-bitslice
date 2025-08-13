@@ -49,4 +49,5 @@ The link to this repository is located in a paper
 **Anatoly Sergeevich Solovyev and Denis Bonislavovich Fomin
 Bitsliced implementations of the «Streebog» and «Kuznechik» algorithms**
 
-published at the CTCRYPT 2025 conference.
+published at the CTCRYPT 2025 conference, https://ctcrypt.ru/files/files/2025/06/solovyev-fomim.pdf
+
