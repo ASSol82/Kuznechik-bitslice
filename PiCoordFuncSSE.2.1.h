@@ -2,8 +2,6 @@
 #define __PICOORDFUNC_BITSLICE_SSE__
 
 
-//#include "VectorTypeSSE.h"
-//#include "Settings_SSE.h"
 #include "Settings.h"
 #include "LogicalOperations.h"
 
@@ -76,9 +74,8 @@ static const int PiStroke_ver = 21;
 
 
 // 4 бита
-// 20241015 добавил выходные переменные b0,b1,b2,b3
+// добавил выходные переменные b0,b1,b2,b3
 // выходные переменные требуются, чтобы сразу использовать перестановку тау
-// см. макрос pi_r_macros_2
 #define bitSigma_macros(a0,a1,a2,a3,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,b0,b1,b2,b3) \
 	tmp1 = _XOR(a3, _OR(a2, a1)), tmp2 = _XOR(a0, tmp1), tmp3 = _XOR(tmp2, a1), \
 		tmp4 = _XOR(tmp1, tmp3), tmp5 = _AND(tmp4, tmp2), tmp6 = _OR(tmp5, a2); \
@@ -107,8 +104,6 @@ static const int PiStroke_ver = 21;
 	a3 = _XOR(tmp3, tmp1);
 
 
-//{ _ALIGN(MALLOCALIGN) register T tmp[14]; \ ругается MSVC
-
 // Pi в виде макроса
 #define pi_r_macros(a0, a1, a2, a3, a4, a5, a6, a7) \
 	{ _ALIGN(MALLOCALIGN) T tmp[14]; \
@@ -128,48 +123,6 @@ static const int PiStroke_ver = 21;
 	mul2_2_2_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[7], tmp[8]); \
 	bitSigma_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], a0, a1, a2, a3); \
 	bitOmega_macros(a0, a1, a2, a3, a4, a5, a6, a7, tmp[0], tmp[1], tmp[2]); }
-
-
-// Pi в виде макроса с выходными векторами b0, b1, b2, b3, b4, b5, b6, b7. Выход записывается именно в b0, b1, b2, b3, b4, b5, b6, b7
-#define pi_r_macros_2(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7) \
-	{ _ALIGN(MALLOCALIGN) T tmp[14]; \
-	bitAlpha_macros(a0,a1,a2,a3,a4,a5,a6,a7,tmp[0],tmp[1],tmp[2],tmp[3]); \
-	tmp[0] = _NOT(_OR(_OR(a0, a1), _OR(a2, a3))); \
-	tmp[1] = a4; tmp[2] = a5; tmp[3] = a6; tmp[4] = a7; \
-	bitNu0_macros(tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],tmp[8],tmp[9]); \
-	bitInv_macros(a0,a1,a2,a3,tmp[5],tmp[6],tmp[7],tmp[8],tmp[12],tmp[13],tmp[11]); \
-	mul2_2_2_macros(a4, a5, a6, a7, tmp[5], tmp[6], tmp[7], tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13]); \
-	bitNu1_macros(a4,a5,a6,a7,tmp[5],tmp[6],tmp[7]); \
-	b4=_XOR(_AND(tmp[0], tmp[1]), a4); \
-	b5=_XOR(_AND(tmp[0], tmp[2]), a5); \
-	b6=_XOR(_AND(tmp[0], tmp[3]), a6); \
-	b7=_XOR(_AND(tmp[0], tmp[4]), a7); \
-	tmp[0] = b4; tmp[1] = b5; tmp[2] = b6; tmp[3] = b7; \
-	bitPhi_macros(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7]); \
-	mul2_2_2_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[7], tmp[8]); \
-	bitSigma_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], b0, b1, b2, b3); \
-	bitOmega_macros(b0, b1, b2, b3, b4, b5, b6, b7, tmp[0], tmp[1], tmp[2]); }
-
-
-// Pi в виде макроса с выходными векторами b0, b1, b2, b3, b4, b5, b6, b7. Выход записывается именно в b0, b1, b2, b3, b4, b5, b6, b7
-//_ALIGN(MALLOCALIGN) T tmp[14];
-#define pi_r_macros_3(tmp, a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7) \
-	bitAlpha_macros(a0,a1,a2,a3,a4,a5,a6,a7,tmp[0],tmp[1],tmp[2],tmp[3]); \
-	tmp[0] = _NOT(_OR(_OR(a0, a1), _OR(a2, a3))); \
-	tmp[1] = a4; tmp[2] = a5; tmp[3] = a6; tmp[4] = a7; \
-	bitNu0_macros(tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],tmp[8],tmp[9]); \
-	bitInv_macros(a0,a1,a2,a3,tmp[5],tmp[6],tmp[7],tmp[8],tmp[12],tmp[13],tmp[11]); \
-	mul2_2_2_macros(a4, a5, a6, a7, tmp[5], tmp[6], tmp[7], tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13]); \
-	bitNu1_macros(a4,a5,a6,a7,tmp[5],tmp[6],tmp[7]); \
-	b4=_XOR(_AND(tmp[0], tmp[1]), a4); \
-	b5=_XOR(_AND(tmp[0], tmp[2]), a5); \
-	b6=_XOR(_AND(tmp[0], tmp[3]), a6); \
-	b7=_XOR(_AND(tmp[0], tmp[4]), a7); \
-	tmp[0] = b4; tmp[1] = b5; tmp[2] = b6; tmp[3] = b7; \
-	bitPhi_macros(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7]); \
-	mul2_2_2_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[7], tmp[8]); \
-	bitSigma_macros(a0, a1, a2, a3, tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], b0, b1, b2, b3); \
-	bitOmega_macros(b0, b1, b2, b3, b4, b5, b6, b7, tmp[0], tmp[1], tmp[2]);
 
 
 #endif
